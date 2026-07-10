@@ -61,6 +61,7 @@ export const SIDEBAR_MODULES_DEFAULT: SidebarModulesAdminConfig = {
   },
   console: {
     enabled: true,
+    overview: true,
     detail: true,
     token: true,
     log: true,

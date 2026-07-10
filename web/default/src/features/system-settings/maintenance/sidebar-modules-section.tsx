@@ -98,6 +98,10 @@ export function SidebarModulesSection({
       },
     },
     console: {
+      overview: {
+        title: t('Overview'),
+        description: t('Landing page with system overview.'),
+      },
       detail: {
         title: t('Dashboard'),
         description: t('Aggregated usage metrics and trend charts.'),
