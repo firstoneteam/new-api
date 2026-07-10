@@ -140,6 +140,11 @@ func testChannel(ctx context.Context, channel *model.Channel, testUserID int, te
 			requestPath = "/v1/images/generations"
 		}
 
+		// 图像生成模型（如 gpt-image-*、dall-e-*、imagen-* 等）走图像生成端点
+		if common.IsImageGenerationModel(testModel) {
+			requestPath = "/v1/images/generations"
+		}
+
 		// responses-only models
 		if strings.Contains(strings.ToLower(testModel), "codex") {
 			requestPath = "/v1/responses"
@@ -775,6 +780,17 @@ func buildTestRequest(model string, endpointType string, channel *model.Channel,
 		return &dto.EmbeddingRequest{
 			Model: model,
 			Input: []any{"hello world"},
+		}
+	}
+
+	// 图像生成模型（与 requestPath 的自动检测保持一致）
+	if common.IsImageGenerationModel(model) ||
+		(channel != nil && channel.Type == constant.ChannelTypeVolcEngine && strings.Contains(model, "seedream")) {
+		return &dto.ImageRequest{
+			Model:  model,
+			Prompt: "a cute cat",
+			N:      lo.ToPtr(uint(1)),
+			Size:   "1024x1024",
 		}
 	}
 
