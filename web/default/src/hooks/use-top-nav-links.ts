@@ -19,6 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useIsSidebarModuleVisible } from '@/hooks/use-sidebar-config'
 import { useStatus } from '@/hooks/use-status'
 import { parseHeaderNavModulesFromStatus } from '@/lib/nav-modules'
 import { useAuthStore } from '@/stores/auth-store'
@@ -60,6 +61,17 @@ export function useTopNavLinks(): TopNavLink[] {
 
   const isAuthed = !!auth?.user
 
+  // Console landing target. Prefer the data dashboard (数据看板); if it is
+  // hidden by sidebar_modules, fall back to the Overview (概览) landing page so
+  // the top-nav "控制台" entry never points at a module the user cannot see.
+  const dashboardVisible = useIsSidebarModuleVisible('/dashboard/models')
+  const overviewVisible = useIsSidebarModuleVisible('/dashboard/overview')
+  const consoleHref = dashboardVisible
+    ? '/dashboard/models'
+    : overviewVisible
+      ? '/dashboard/overview'
+      : '/dashboard'
+
   const links: TopNavLink[] = []
 
   // Home
@@ -67,9 +79,9 @@ export function useTopNavLinks(): TopNavLink[] {
     links.push({ title: t('Home'), href: '/' })
   }
 
-  // Console -> /dashboard (new console path)
+  // Console -> data dashboard (数据看板), falling back to Overview when hidden
   if (modules?.console !== false) {
-    links.push({ title: t('Console'), href: '/dashboard' })
+    links.push({ title: t('Console'), href: consoleHref })
   }
 
   // Pricing
