@@ -46,3 +46,8 @@ service/openaicompat/chat_responses_live_local_test.go
 new-api-*
 *.tar.gz
 .env.*
+
+# Local-only secrets and cluster credentials (never commit)
+.local/
+KubeConfig.yml
+*.kubeconfig
